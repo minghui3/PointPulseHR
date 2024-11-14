@@ -16,7 +16,7 @@ async function main() {
             console.log("here");
             const collection = database.collection(dbConfig.collection + "_" + browser);
             const testResult = JSON.parse(fs.readFileSync(resultPath))
-            const result = await collection.insertOne({testResult});
+            const result = await collection.insertOne({result : testResult});
             console.log(result);
         }
     }
