@@ -1,5 +1,4 @@
 const { MongoClient } = require("mongodb");
-const { v4 } = require("uuid");
 const fs = require("fs");
 const dbConfig = require("../config/mongodb.config");
 
@@ -16,9 +15,8 @@ async function main() {
         if (fs.existsSync(resultPath)) {
             console.log("here");
             const collection = database.collection(dbConfig.collection + "_" + browser);
-            const uuid = v4();
             const testResult = JSON.parse(fs.readFileSync(resultPath))
-            const result = await collection.insertOne({ uuid: testResult});
+            const result = await collection.insertOne({testResult});
             console.log(result);
         }
     }
