@@ -18,9 +18,9 @@ public class EmailUtil {
 
         // Load environment variables from .env file
         Dotenv dotenv = Dotenv.load();
-        String to = dotenv.get("EMAIL_RECIPIENT");
-        String from = dotenv.get("EMAIL_SENDER");
-        String password = dotenv.get("EMAIL_PASSWORD");
+        String to = "quahminghui@gmail.com";
+        String from = "chummycomb0205@gmail.com";
+        String password = "qlbl stqm xhux ivyv";
         String host = "smtp.gmail.com";  // Gmail SMTP server
 
         // Setup properties for Gmail SMTP
