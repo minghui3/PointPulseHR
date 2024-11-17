@@ -1,6 +1,7 @@
 # PointPulseHR
 An internal HR application to simplify HR operations, including managing employee directories, leaves, and expense claims.
 
+
 ## Features
 PointPulseHR provides the following core features:
 
