@@ -21,7 +21,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 script {
-                    git url: 'https://github.com/minghui3/PointPulseHR.git', branch: 'ming-hui-branch'
+                    git url: 'https://github.com/minghui3/PointPulseHR.git', branch: 'main'
                 }
             }
         }
