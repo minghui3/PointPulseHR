@@ -1,9 +1,9 @@
 # PointPulseHR
-### Purpose:
+## Purpose:
  - PointPulseHR is an internal HR application that's tasked to simplify HR operations such as maintaining employee directories, leaves, and expense claims. By having a centralized HR application, it allows for easy access to commonly used HR services like leave application or expense claim submission. The consolidation of HR tasks into one app helps employees by simplifying the administrative processes of having to apply for leave or submit an expense claim which overall helps boost productivity since employees can primarily focus on their main responsibilities.
 
 
-# Features:
+## Features:
 ### PointPulseHR provides the following core HR features:
 
 - Employee Directory: View and manage employee information.
@@ -15,7 +15,7 @@
   - Employees can submit expense claims for reimbursement.
   - HR staff can approve, reject, or manage claims.
  
-# User's Guide:
+## User's Guide:
 ### Employee:
 
 1. An internal employee would like to submit an expense claim on PointPulseHR since he was tasked to purchase Office Supplies
