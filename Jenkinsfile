@@ -10,7 +10,7 @@ pipeline {
         PGDATABASE = 'testdb'
         PATH = "${MAVEN_HOME}bin;${JAVA_HOME}bin;C:\\Windows\\System32;C:\\Program Files\\nodejs\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
         SELENIUM_HUB_URL = 'http://localhost:4444/wd/hub'
-        MONGO_URI = 'mongodb+srv://minghui3:QUAHM8758C@clusterfsdp.ut19z.mongodb.net/?retryWrites=true&w=majority&appName=clusterfsdp'
+        MONGO_URI = 'mongodb+srv://minghui3:<password>@clusterfsdp.ut19z.mongodb.net/?retryWrites=true&w=majority&appName=clusterfsdp'
         MONGO_DB = 'PointPulseHR'
         CHROME_DRIVER_VERSION = '131.0.6778.69' 
         CHROME_DRIVER_PATH = "C:\\Program Files\\chromedriver-win64\\chromedriver.exe"
