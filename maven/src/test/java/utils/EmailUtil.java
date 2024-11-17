@@ -17,7 +17,6 @@ public class EmailUtil {
         };
 
         // Load environment variables from .env file
-        Dotenv dotenv = Dotenv.load();
         String to = "quahminghui@gmail.com";
         String from = "chummycomb0205@gmail.com";
         String password = "qlbl stqm xhux ivyv";
