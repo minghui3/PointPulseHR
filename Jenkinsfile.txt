@@ -6,11 +6,11 @@ pipeline {
         JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.5.11-hotspot\\'
         PGHOST = 'localhost'
         PGUSER = 'postgres'
-        PGPASSWORD = ''
+        PGPASSWORD = '03C283372u06'
         PGDATABASE = 'testdb'
         PATH = "${MAVEN_HOME}bin;${JAVA_HOME}bin;C:\\Windows\\System32;C:\\Program Files\\nodejs\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
         SELENIUM_HUB_URL = 'http://localhost:4444/wd/hub'
-        MONGO_URI = 'mongodb+srv://minghui3:<password>@clusterfsdp.ut19z.mongodb.net/?retryWrites=true&w=majority&appName=clusterfsdp'
+        MONGO_URI = 'mongodb+srv://minghui3:QUAHM8758C@clusterfsdp.ut19z.mongodb.net/?retryWrites=true&w=majority&appName=clusterfsdp'
         MONGO_DB = 'PointPulseHR'
         CHROME_DRIVER_VERSION = '131.0.6778.69' 
         CHROME_DRIVER_PATH = "C:\\Program Files\\chromedriver-win64\\chromedriver.exe"
@@ -71,9 +71,9 @@ pipeline {
                         script {
                             try {
                                 bat """
-                                cd ${WORKSPACE}/maven
-                                \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=chrome -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin=\"json:target/cucumber-reports/chrome-report.json,html:target/cucumber-reports/chrome-html-report.html\"
-                                """
+                            cd ${WORKSPACE}/maven
+                            \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=chrome -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin="json:target/cucumber-reports/chrome/chrome-report.json,html:target/cucumber-reports/chrome/chrome-html-report.html"
+                            """
                             } catch (Exception e) {
                                 echo "Chrome tests failed, but continuing the pipeline..."
                             } 
@@ -85,9 +85,9 @@ pipeline {
                         script {
                             try {
                                 bat """
-                                cd ${WORKSPACE}/maven
-                                \"${MAVEN_HOME}/bin/mvn\" clean install -Dbrowser=firefox -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin=\"json:target/cucumber-reports/firefox-report.json,html:target/cucumber-reports/firefox-html-report.html\"
-                                """
+                            cd ${WORKSPACE}/maven
+                            \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=firefox -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin="json:target/cucumber-reports/firefox/firefox-report.json,html:target/cucumber-reports/firefox/firefox-html-report.html"
+                            """
                             } catch (Exception e) {
                                 echo "Firefox tests failed, but continuing the pipeline..."
                             }
@@ -100,7 +100,7 @@ pipeline {
                             try {
                                 bat """
                                 cd ${WORKSPACE}/maven
-                               \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=edge -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin=\"json:target/cucumber-reports/edge-report.json,html:target/cucumber-reports/edge-html-report.html\"
+                                \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=edge -Dgrid.url=${SELENIUM_HUB_URL}-Dcucumber.plugin="json:target/cucumber-reports/edge/edge-report.json,html:target/cucumber-reports/edge/edge-html-report.html"
                                 """
                             } catch (Exception e) {
                                 echo "Edge tests failed, but continuing the pipeline..."
