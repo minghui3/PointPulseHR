@@ -43,7 +43,7 @@ public class ApplyLeave {
     @And("I enter {string} as the start date")
     public void i_enter_as_the_start_date(String startDate) {
         WebElement startDateInput = driver.findElement(By.xpath("//input[@id='start-date']"));
-        startDateInput.click();
+        // startDateInput.click();
         startDateInput.sendKeys(startDate);
     }
     @And("I enter {string} as the end date")
