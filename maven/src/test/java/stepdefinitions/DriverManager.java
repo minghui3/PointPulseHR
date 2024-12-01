@@ -20,7 +20,7 @@ public class DriverManager {
 
     private static void initializeDriver() {
         // Get the browser type from the system property, default to Chrome
-        String browser = System.getProperty("browser", "firefox").toLowerCase();
+        String browser = System.getProperty("browser", "chrome").toLowerCase();
 
         switch (browser) {
             case "chrome":
