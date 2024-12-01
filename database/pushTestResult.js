@@ -15,6 +15,7 @@ async function main() {
         if (fs.existsSync(resultPath)) {
             console.log("here");
             const collection = database.collection(dbConfig.collection + "_" + browser);
+            console.log(collection);
             const testResult = JSON.parse(fs.readFileSync(resultPath))
             const result = await collection.insertOne({"result" : testResult});
         }
