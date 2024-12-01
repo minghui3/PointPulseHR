@@ -24,7 +24,7 @@ public class Expense {
     public void i_enter_as_the_expense_date(String date){
         WebElement expenseDateInput =  driver.findElement(By.id("date"));
         // expenseDateInput.click();
-        expenseDateInput.sendKeys("20/20/2024");
+        expenseDateInput.sendKeys(date);
     }
     @And("I enter {string} as the expense amount")
     public void i_entered_as_the_expense_amount(String amount){
