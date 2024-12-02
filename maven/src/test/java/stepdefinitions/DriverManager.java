@@ -1,3 +1,5 @@
+package stepdefinitions;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -35,6 +37,8 @@ public class DriverManager {
 
                 case "edge":
                     EdgeOptions edgeOptions = new EdgeOptions();
+                    edgeOptions.addArguments("--headless");
+
                     driver = new RemoteWebDriver(new URL(hubUrl), edgeOptions);
                     break;
 
