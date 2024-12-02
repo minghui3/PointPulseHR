@@ -35,7 +35,7 @@ public class DriverManager {
 
             case "edge":
                 EdgeOptions edgeOptions = new EdgeOptions();
-                edgeOptions.addArguments("--headless");
+                edgeOptions.addArguments("--remote-debugging-port=9222");
                 driver = new EdgeDriver(edgeOptions);
                 break;
 
