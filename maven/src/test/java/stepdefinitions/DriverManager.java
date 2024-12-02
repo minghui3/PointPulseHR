@@ -45,8 +45,16 @@ public class DriverManager {
                 default:
                     throw new IllegalArgumentException("Unsupported browser: " + browser);
             }
+
+            // Set timeouts
+            driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);  // Set page load timeout
+            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);  // Set implicit wait timeout
+            driver.manage().timeouts().setScriptTimeout(20, TimeUnit.SECONDS);  // Set script timeout
+
         } catch (Exception e) {
+            System.out.println("Error initializing WebDriver: " + e.getMessage());
             e.printStackTrace();
+            throw new RuntimeException("Failed to initialize WebDriver", e);  // Re-throw exception for better handling
         }
     }
 
