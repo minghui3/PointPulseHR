@@ -6,6 +6,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 public class DriverManager {
     private static WebDriver driver;
