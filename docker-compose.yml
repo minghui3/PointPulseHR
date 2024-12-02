@@ -31,7 +31,7 @@ services:
       - selenium-network
 
   edge:
-    image: selenium/node-edge:latest
+    image: selenium/node-edge:131.0-edgedriver-131.0
     depends_on:
       - selenium-hub
     environment:
