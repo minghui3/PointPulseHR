@@ -23,7 +23,7 @@ public class DriverManager {
         String browser = System.getProperty("browser", "chrome").toLowerCase();
 
         try {
-            String hubUrl = "http://localhost:4444/wd/hub";  // URL of the Selenium Grid Hub
+            String hubUrl = "http://selenium-hub:4444/";  // URL of the Selenium Grid Hub
 
             switch (browser) {
                 case "chrome":
@@ -38,19 +38,13 @@ public class DriverManager {
 
                 case "edge":
                     EdgeOptions edgeOptions = new EdgeOptions();
-                    edgeOptions.addArguments("--headless");
-
                     driver = new RemoteWebDriver(new URL(hubUrl), edgeOptions);
                     break;
 
                 default:
                     throw new IllegalArgumentException("Unsupported browser: " + browser);
             }
-
-            // Set timeouts
-            driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);  // Set page load timeout
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);  // Set implicit wait timeout
-            driver.manage().timeouts().setScriptTimeout(20, TimeUnit.SECONDS);  // Set script timeout
+            
 
         } catch (Exception e) {
             System.out.println("Error initializing WebDriver: " + e.getMessage());
