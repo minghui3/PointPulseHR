@@ -9,9 +9,9 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 
 public class DriverManager {
-    private static WebDriver driver;
+    private static RemoteWebDriver driver;
 
-    public static WebDriver getDriver() {
+    public static RemoteWebDriver getDriver() {
         if (driver == null) {
             initializeDriver();
         }
