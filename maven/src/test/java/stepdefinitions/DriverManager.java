@@ -35,7 +35,9 @@ public class DriverManager {
 
             case "edge":
                 EdgeOptions edgeOptions = new EdgeOptions();
-                edgeOptions.addArguments("--remote-debugging-port=9222");
+                edgeOptions.addArguments("--headless"); // Use headless mode
+                edgeOptions.addArguments("--disable-gpu"); // Disable GPU acceleration
+                edgeOptions.addArguments("--remote-debugging-port=4444");
                 driver = new EdgeDriver(edgeOptions);
                 break;
 
