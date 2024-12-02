@@ -36,8 +36,6 @@ public class DriverManager {
             case "edge":
                 EdgeOptions edgeOptions = new EdgeOptions();
                 edgeOptions.addArguments("--headless");
-                edgeOptions.addArguments("--disable-gpu");
-                edgeOptions.addArguments("--window-size=1920,1080");
                 driver = new EdgeDriver(edgeOptions);
                 break;
 
