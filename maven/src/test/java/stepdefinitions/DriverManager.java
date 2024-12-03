@@ -35,8 +35,6 @@ public class DriverManager {
 
             case "edge":
                 EdgeOptions edgeOptions = new EdgeOptions();
-                edgeOptions.addArguments("--headless");
-                edgeOptions.addArguments("--disable-gpu");
                 driver = new EdgeDriver(edgeOptions);
                 break;
 
