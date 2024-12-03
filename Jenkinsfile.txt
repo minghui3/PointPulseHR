@@ -20,10 +20,18 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Prepare/Checkout') {
             steps {
-                script {
-                    git url: 'https://github.com/minghui3/PointPulseHR.git', branch: 'main'
+                // Clean workspace
+                cleanWs()
+                // Checkout first repo
+                dir('first-repo'){
+                    git branch: 'main', url: 'https://github.com/minghui3/PointPulseHR.git' 
+                }
+
+                // Checkout second repo
+                dir('second-repo') {
+                    git branch: 'main', url: 'https://github.com/minghui3/test-cases.git'
                 }
             }
         }
@@ -31,12 +39,14 @@ pipeline {
         stage('Setup Selenium Grid') {
             steps {
                 script {
-                    // Stop and remove existing selenium-hub container if it's running
-                    bat '''
-                    docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
-                    docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
-                    docker-compose -f docker-compose.yml up -d
-                    '''
+                    dir('second-repo'){
+                        // Stop and remove existing selenium-hub container if it's running
+                        bat '''
+                        docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
+                        docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
+                        docker-compose -f docker-compose.yml up -d
+                        '''
+                    }
                 }
             }
         }
@@ -44,8 +54,10 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Install Node.js dependencies using npm on Windows
-                    bat 'npm install'
+                    dir('first-repo'){
+                        // Install Node.js dependencies using npm on Windows
+                        bat 'npm install'
+                    }
                 }
             }
         }
@@ -53,8 +65,10 @@ pipeline {
         stage('Initialize Database') {
             steps {
                 script {
-                    // Run the initdb script to set up the database on Windows
-                    bat 'npm run initdb'
+                    dir('first-repo'){
+                        // Run the initdb script to set up the database on Windows
+                        bat 'npm run initdb'
+                    }
                 }
             }
         }
@@ -62,8 +76,10 @@ pipeline {
         stage('Run Development Server') {
             steps {
                 script {
-                    // Run the development server on Windows
-                    bat 'start /B npm run dev'
+                    dir('first-repo'){
+                        // Run the development server on Windows
+                        bat 'start /B npm run dev'
+                    }
                 }
             }
         }
@@ -73,27 +89,29 @@ pipeline {
                 stage('Chrome Tests') {
                     steps {
                         script {
-                            try {
+                            dir('second-repo'){
+                                try {
                                 bat """
-                            cd ${WORKSPACE}/maven
-                            \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=chrome -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin="json:target/cucumber-reports/chrome/chrome-report.json,html:target/cucumber-reports/chrome/chrome-html-report.html"
+                            \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=chrome -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin="json:target/cucumber-reports/chrome/chrome-report.json"
                             """
-                            } catch (Exception e) {
-                                echo "Chrome tests failed, but continuing the pipeline..."
-                            } 
+                                }   catch (Exception e) {
+                                    echo "Chrome tests failed, but continuing the pipeline..."
+                                } 
+                            }
                         }
                     }
                 }
                 stage('Firefox Tests') {
                     steps {
                         script {
-                            try {
+                            dir('second-repo'){
+                                try {
                                 bat """
-                            cd ${WORKSPACE}/maven
-                            \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=firefox -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin="json:target/cucumber-reports/firefox/firefox-report.json,html:target/cucumber-reports/firefox/firefox-html-report.html"
+                            \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=firefox -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin="json:target/cucumber-reports/firefox/firefox-report.json"
                             """
-                            } catch (Exception e) {
-                                echo "Firefox tests failed, but continuing the pipeline..."
+                                }   catch (Exception e) {
+                                    echo "Firefox tests failed, but continuing the pipeline..."
+                                } 
                             }
                         }
                     }
@@ -101,38 +119,41 @@ pipeline {
                 stage('Edge Tests') {
                     steps {
                         script {
-                            try {
+                            dir('second-repo'){
+                                try {
                                 bat """
-                                cd ${WORKSPACE}/maven
-                                \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=edge -Dgrid.url=${SELENIUM_HUB_URL}-Dcucumber.plugin="json:target/cucumber-reports/edge/edge-report.json,html:target/cucumber-reports/edge/edge-html-report.html"
-                                """
-                            } catch (Exception e) {
-                                echo "Edge tests failed, but continuing the pipeline..."
+                            \"${MAVEN_HOME}/bin/mvn\" test -Dbrowser=edge -Dgrid.url=${SELENIUM_HUB_URL} -Dcucumber.plugin="json:target/cucumber-reports/edge/edge-report.json"
+                            """
+                                }   catch (Exception e) {
+                                    echo "Edge tests failed, but continuing the pipeline..."
+                                } 
                             }
                         }
                     }
                 }
             }
         }
-        stage('Push Test Results to MongoDB') {
+        
+        stage('Add Test Results') {
             steps {
                 script {
-                    // Run MongoDB script to push test results
-                    bat """
-                    cd ${WORKSPACE}/database
-                    node pushTestResult.js
-                    """
+                    dir('second-repo'){
+                        bat "mvn exec:java"
+                    }
                 }
             }
         }
+        
         stage('Teardown Selenium Grid') {
             steps {
                 script {
-                    // Forcefully stop and remove the selenium-hub container
-                    bat '''
-                    docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
-                    docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
-                    '''
+                    dir('second-repo'){
+                        // Forcefully stop and remove the selenium-hub container
+                        bat '''
+                        docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
+                        docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
+                        '''
+                    }
                 }
             }
         }
