@@ -8,12 +8,14 @@ pipeline {
         PGUSER = 'postgres'
         PGPASSWORD = '03C283372u06'
         PGDATABASE = 'testdb'
-        PATH = "${MAVEN_HOME}bin;${JAVA_HOME}bin;C:\\Windows\\System32;C:\\Program Files\\nodejs\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
+        PATH = "${MAVEN_HOME}bin;${JAVA_HOME}bin;C:\\Windows\\System32;C:\\Program Files\\nodejs\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\Users\\quahm\\Downloads\\edgedriver_win64;C:\\Program Files (x86)\\Microsoft\\Edge\\Application"
         SELENIUM_HUB_URL = 'http://localhost:4444/wd/hub'
-        MONGO_URI = 'mongodb+srv://minghui3:QUAHM8758C@clusterfsdp.ut19z.mongodb.net/?retryWrites=true&w=majority&appName=clusterfsdp'
-        MONGO_DB = 'PointPulseHR'
+        MONGOURI = 'mongodb+srv://minghui3:QUAHM8758C@clusterfsdp.ut19z.mongodb.net/?retryWrites=true&w=majority&appName=clusterfsdp'
+        MONGODB = 'PointPulseHR'
+        MONGOCOLLECTION = 'test_results'
         CHROME_DRIVER_VERSION = '131.0.6778.69' 
         CHROME_DRIVER_PATH = "C:\\Program Files\\chromedriver-win64\\chromedriver.exe"
+        EDGE_PATH = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
         
     }
 
@@ -31,6 +33,8 @@ pipeline {
                 script {
                     // Stop and remove existing selenium-hub container if it's running
                     bat '''
+                    docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
+                    docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
                     docker-compose -f docker-compose.yml up -d
                     '''
                 }
@@ -114,7 +118,10 @@ pipeline {
             steps {
                 script {
                     // Run MongoDB script to push test results
-                    bat 'node pushTestResults.js'
+                    bat """
+                    cd ${WORKSPACE}/database
+                    node pushTestResult.js
+                    """
                 }
             }
         }
