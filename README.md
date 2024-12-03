@@ -13,7 +13,7 @@
   - HR staff can approve, reject, or manage leave requests.
 - Expense Claims:
   - Employees can submit expense claims for reimbursement.
-  - HR staff can approve, reject, or manage claims.
+  - HR staff can approve, reject, or manage claims..
  
 ## User's Guide:
 ### Employee:
