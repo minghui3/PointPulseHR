@@ -10,7 +10,7 @@ async function main() {
     const database = client.db(dbConfig.database);
 
     for (const browser of browsers) {
-        const resultPath = "./maven/target/cucumber-reports/" + browser + "/" + browser + "-report.json";
+        const resultPath = "../maven/target/cucumber-reports/" + browser + "/" + browser + "-report.json";
         console.log(resultPath);
         if (fs.existsSync(resultPath)) {
             console.log("here");
