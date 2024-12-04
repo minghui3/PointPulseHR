@@ -38,3 +38,5 @@
    5. Assuming that there is an existing expense claim in the dashboard, the manager will be able to view the reason for such expense claim along with the amount to be reimbursed with.
    6. Click on the "Approve" button to approve of the expense claim.
    7. The expense claim would've been moved into the "Approved" section.
+  
+   8. BUH
