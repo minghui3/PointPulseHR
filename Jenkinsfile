@@ -42,10 +42,11 @@ pipeline {
                     dir('second-repo'){
                         // Stop and remove existing selenium-hub container if it's running
                         sh '''
-                        docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
-                        docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
+                        docker ps -q -f name=selenium-hub | xargs -r docker kill
+                        docker ps -aq -f name=selenium-hub | xargs -r docker rm -f
                         docker-compose -f docker-compose.yml up -d
                         '''
+
                     }
                 }
             }
