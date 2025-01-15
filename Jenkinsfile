@@ -35,19 +35,13 @@ pipeline {
                 }
             }
         }
-
-        stage('OS Info') {
-            steps {
-                bat 'uname -a || ver'
-            }
-        }
         
         stage('Setup Selenium Grid') {
             steps {
                 script {
                     dir('second-repo'){
                         // Stop and remove existing selenium-hub container if it's running
-                        bat '''
+                        sh '''
                         docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
                         docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
                         docker-compose -f docker-compose.yml up -d
@@ -62,7 +56,7 @@ pipeline {
                 script {
                     dir('first-repo'){
                         // Install Node.js dependencies using npm on Windows
-                        bat 'npm install'
+                        sh 'npm install'
                     }
                 }
             }
@@ -73,7 +67,7 @@ pipeline {
                 script {
                     dir('first-repo'){
                         // Run the initdb script to set up the database on Windows
-                        bat 'npm run initdb'
+                        sh 'npm run initdb'
                     }
                 }
             }
