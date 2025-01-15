@@ -31,7 +31,7 @@ pipeline {
 
                 // Checkout second repo
                 dir('second-repo') {
-                    git branch: 'main', url: 'https://github.com/minghui3/test-cases.git'
+                    git branch: 'expensivehippo', url: 'https://github.com/minghui3/test-cases.git'
                 }
             }
         }
