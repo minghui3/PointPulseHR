@@ -38,7 +38,7 @@ pipeline {
 
         stage('OS Info') {
             steps {
-                sh 'uname -a || ver'
+                bat 'uname -a || ver'
             }
         }
         
