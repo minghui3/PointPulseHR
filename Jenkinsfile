@@ -35,6 +35,12 @@ pipeline {
                 }
             }
         }
+
+        stage('OS Info') {
+            steps {
+                sh 'uname -a || ver'
+            }
+        }
         
         stage('Setup Selenium Grid') {
             steps {
