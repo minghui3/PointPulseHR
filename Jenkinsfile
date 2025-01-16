@@ -86,7 +86,9 @@ pipeline {
                 script {
                     dir('first-repo'){
                         // Run the development server in background
+                        sh '''#!/bin/bash
                         npm run dev &
+                        '''
                     }
                 }
             }
