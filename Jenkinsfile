@@ -46,7 +46,6 @@ pipeline {
             steps {
                 script {
                     dir('second-repo'){
-                        // Stop and remove existing selenium-hub container if it's running
                         
                         // Killing and removing existing Selenium Hub containers
                         docker ps -q -f name=selenium-hub | while read id; do docker kill "$id"; done
