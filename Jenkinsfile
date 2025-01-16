@@ -85,8 +85,8 @@ pipeline {
             steps {
                 script {
                     dir('first-repo'){
-                        // Run the development server on Windows
-                        start /B npm run dev
+                        // Run the development server in background
+                        npm run dev &
                     }
                 }
             }
