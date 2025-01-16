@@ -35,24 +35,10 @@ pipeline {
                 }
             }
         }
-
-        stage('Run Windows Command') {
-            steps {
-                // Check if the agent is running on a Windows node and execute Windows-specific commands
-                script {
-                    if (isUnix()) {
-                        sh 'echo "Running on Linux, skipping Windows commands."'
-                    } else {
-                        bat 'echo "Running on Windows, executing Windows commands."'
-                    }
-                }
-            }
-        }
         
         stage('Test') {
             steps {
-                sh 'set -x'
-                sh 'echo "Testing Shell Script Execution" '
+                echo "Testing Shell Script Execution"
             }
         }
         
