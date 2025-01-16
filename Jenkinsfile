@@ -38,6 +38,7 @@ pipeline {
 
         stage('Test') {
             steps {
+                sh 'set -x'
                 sh 'echo "Testing Shell Script Execution" '
             }
         }
