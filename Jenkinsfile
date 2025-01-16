@@ -48,9 +48,12 @@ pipeline {
                     dir('second-repo'){
                         // Stop and remove existing selenium-hub container if it's running
                         
-                        docker ps -q -f name=selenium-hub | while read id; do docker kill "$id"; done
-                        docker ps -aq -f name=selenium-hub | while read id; do docker rm -f "$id"; done
-                        docker-compose -f docker-compose.yml up -d
+                        // Killing and removing existing Selenium Hub containers
+                        sh 'docker ps -q -f name=selenium-hub | while read id; do docker kill "$id"; done'
+                        sh 'docker ps -aq -f name=selenium-hub | while read id; do docker rm -f "$id"; done'
+                    
+                        // Restarting containers using docker-compose
+                        sh 'docker-compose -f docker-compose.yml up -d'
                     }
                 }
             }
