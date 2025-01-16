@@ -38,7 +38,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh echo "Testing Shell Script Execution" \
+                sh 'echo "Testing Shell Script Execution"' \
                 ls -la
             }
         }
