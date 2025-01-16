@@ -47,12 +47,10 @@ pipeline {
                 script {
                     dir('second-repo'){
                         // Stop and remove existing selenium-hub container if it's running
-                        sh '''
-                        set -x
+                        
                         docker ps -q -f name=selenium-hub | while read id; do docker kill "$id"; done
                         docker ps -aq -f name=selenium-hub | while read id; do docker rm -f "$id"; done
                         docker-compose -f docker-compose.yml up -d
-                        '''
                     }
                 }
             }
@@ -63,7 +61,7 @@ pipeline {
                 script {
                     dir('first-repo'){
                         // Install Node.js dependencies using npm on Windows
-                        sh 'npm install'
+                        npm install
                     }
                 }
             }
@@ -74,7 +72,7 @@ pipeline {
                 script {
                     dir('first-repo'){
                         // Run the initdb script to set up the database on Windows
-                        sh 'npm run initdb'
+                        npm run initdb
                     }
                 }
             }
@@ -85,7 +83,7 @@ pipeline {
                 script {
                     dir('first-repo'){
                         // Run the development server on Windows
-                        bat 'start /B npm run dev'
+                        start /B npm run dev
                     }
                 }
             }
