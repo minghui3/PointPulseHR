@@ -36,23 +36,14 @@ pipeline {
             }
         }
         
-        stage('Test') {
-            steps {
-                echo "Testing Shell Script Execution"
-            }
-        }
-        
         stage('Setup Selenium Grid') {
             steps {
                 script {
                     dir('second-repo'){
-                        
-                        // Run shell commands using the `sh` step
-                        sh '''#!/bin/bash
-                        docker ps -q -f name=selenium-hub | while read id; do docker kill "$id"; done
-                        docker ps -aq -f name=selenium-hub | while read id; do docker rm -f "$id"; done
-
-                        # Restarting containers using docker-compose
+                        // Stop and remove existing selenium-hub container if it's running
+                        bat '''
+                        docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
+                        docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
                         docker-compose -f docker-compose.yml up -d
                         '''
                     }
@@ -65,7 +56,7 @@ pipeline {
                 script {
                     dir('first-repo'){
                         // Install Node.js dependencies using npm on Windows
-                        npm install
+                        bat 'npm install'
                     }
                 }
             }
@@ -76,7 +67,7 @@ pipeline {
                 script {
                     dir('first-repo'){
                         // Run the initdb script to set up the database on Windows
-                        npm run initdb
+                        bat 'npm run initdb'
                     }
                 }
             }
@@ -86,10 +77,8 @@ pipeline {
             steps {
                 script {
                     dir('first-repo'){
-                        // Run the development server in background
-                        sh '''#!/bin/bash
-                        npm run dev &
-                        '''
+                        // Run the development server on Windows
+                        bat 'start /B npm run dev'
                     }
                 }
             }
