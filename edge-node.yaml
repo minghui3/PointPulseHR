@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edge-node
+spec:
+  replicas: 2  # Change this to scale Edge instances
+  selector:
+    matchLabels:
+      app: edge-node
+  template:
+    metadata:
+      labels:
+        app: edge-node
+    spec:
+      containers:
+        - name: edge-node
+          image: selenium/node-edge:latest
+          env:
+            - name: SE_EVENT_BUS_HOST
+              value: "selenium-hub"
+            - name: SE_EVENT_BUS_PORT
+              value: "4444"
+            - name: NODE_MAX_INSTANCES
+              value: "5"
+            - name: NODE_MAX_SESSION
+              value: "5"
