@@ -6,11 +6,11 @@ pipeline {
         JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.5.11-hotspot\\'
         PGHOST = 'localhost'
         PGUSER = 'postgres'
-        PGPASSWORD = '03C283372u06'
+        PGPASSWORD = credentials('POSTGRES_PASSWORD')
         PGDATABASE = 'testdb'
         PATH = "${MAVEN_HOME}bin;${JAVA_HOME}bin;C:\\Windows\\System32;C:\\Program Files\\nodejs\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\Users\\quahm\\Downloads\\edgedriver_win64;C:\\Program Files (x86)\\Microsoft\\Edge\\Application"
         SELENIUM_HUB_URL = 'http://localhost:4444/wd/hub'
-        MONGOURI = 'mongodb+srv://minghui3:QUAHM8758C@clusterfsdp.ut19z.mongodb.net/?retryWrites=true&w=majority&appName=clusterfsdp'
+        MONGOURI = credentials('MONGOURI')
         MONGODB = 'PointPulseHR'
         MONGOCOLLECTION = 'test_results'
         CHROME_DRIVER_VERSION = '131.0.6778.69' 
