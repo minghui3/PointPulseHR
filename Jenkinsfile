@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        KUBECONFIG = credentials('KUBECONFIG')
         MAVEN_HOME = 'C:\\Program Files\\apache-maven-3.9.9\\'
         JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.5.11-hotspot\\'
         PGHOST = 'localhost'
@@ -26,12 +27,12 @@ pipeline {
                 cleanWs()
                 // Checkout first repo
                 dir('first-repo'){
-                    git branch: 'main', url: 'https://github.com/minghui3/PointPulseHR.git' 
+                    git branch: 'minghui3-patch-1', url: 'https://github.com/minghui3/PointPulseHR.git' 
                 }
 
                 // Checkout second repo
                 dir('second-repo') {
-                    git branch: 'expensivehippo', url: 'https://github.com/minghui3/test-cases.git'
+                    git branch: 'minghui-test', url: 'https://github.com/minghui3/test-cases.git'
                 }
             }
         }
@@ -44,9 +45,30 @@ pipeline {
                         bat '''
                         docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
                         docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
-                        docker-compose -f docker-compose.yml up -d
+                        kubectl apply -f selenium-hub.yaml
+                        kubectl apply -f chrome-node.yaml
+                        kubectl apply -f firefox-node.yaml
+                        kubectl apply -f edge-node.yaml
                         '''
                     }
+                }
+            }
+        }
+        
+        stage('Scale Selenium Grid') {
+            steps {
+                script {
+                    bat '''
+                    echo Before Scaling:
+                    kubectl get pods
+                    echo Scaling Selenium Grid nodes...
+                    kubectl scale deployment selenium-hub --replicas=3
+                    kubectl scale deployment chrome-node --replicas=5
+                    kubectl scale deployment edge-node --replicas=5
+                    kubectl scale deployment firefox-node --replicas=5
+                    echo After Scaling:
+                    kubectl get pods
+                    '''
                 }
             }
         }
@@ -83,6 +105,7 @@ pipeline {
                 }
             }
         }
+        
         
         stage('Run Test Cases') {
             parallel {
@@ -148,10 +171,10 @@ pipeline {
             steps {
                 script {
                     dir('second-repo'){
-                        // Forcefully stop and remove the selenium-hub container
                         bat '''
-                        docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
-                        docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
+                        echo "Starting Docker cleanup"
+                        for /F "tokens=*" %%i in ('docker ps -q --filter "name=k8s_"') do docker kill %%i
+                        for /F "tokens=*" %%i in ('docker ps -aq --filter "name=k8s_"') do docker rm -f %%i
                         '''
                     }
                 }
