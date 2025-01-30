@@ -29,3 +29,6 @@ spec:
           image: selenium/hub:latest
           ports:
             - containerPort: 4444
+          env:
+            - name: GRID_MAX_SESSION
+            value: "10"  # Set the maximum number of parallel sessions here
