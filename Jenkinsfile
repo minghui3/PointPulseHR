@@ -2,15 +2,16 @@ pipeline {
     agent any
 
     environment {
+        KUBECONFIG = credentials('KUBECONFIG')
         MAVEN_HOME = 'C:\\Program Files\\apache-maven-3.9.9\\'
         JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.5.11-hotspot\\'
         PGHOST = 'localhost'
         PGUSER = 'postgres'
-        PGPASSWORD = '03C283372u06'
+        PGPASSWORD = credentials('POSTGRES_PASSWORD')
         PGDATABASE = 'testdb'
         PATH = "${MAVEN_HOME}bin;${JAVA_HOME}bin;C:\\Windows\\System32;C:\\Program Files\\nodejs\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\Users\\quahm\\Downloads\\edgedriver_win64;C:\\Program Files (x86)\\Microsoft\\Edge\\Application"
         SELENIUM_HUB_URL = 'http://localhost:4444/wd/hub'
-        MONGOURI = 'mongodb+srv://minghui3:QUAHM8758C@clusterfsdp.ut19z.mongodb.net/?retryWrites=true&w=majority&appName=clusterfsdp'
+        MONGOURI = credentials('MONGOURI')
         MONGODB = 'PointPulseHR'
         MONGOCOLLECTION = 'test_results'
         CHROME_DRIVER_VERSION = '131.0.6778.69' 
@@ -26,19 +27,13 @@ pipeline {
                 cleanWs()
                 // Checkout first repo
                 dir('first-repo'){
-                    git branch: 'main', url: 'https://github.com/minghui3/PointPulseHR.git' 
+                    git branch: 'minghui3-patch-1', url: 'https://github.com/minghui3/PointPulseHR.git' 
                 }
 
                 // Checkout second repo
                 dir('second-repo') {
-                    git branch: 'expensivehippo', url: 'https://github.com/minghui3/test-cases.git'
+                    git branch: 'minghui-test', url: 'https://github.com/minghui3/test-cases.git'
                 }
-            }
-        }
-
-        stage('OS Info') {
-            steps {
-                sh 'uname -a || ver'
             }
         }
         
@@ -48,11 +43,32 @@ pipeline {
                     dir('second-repo'){
                         // Stop and remove existing selenium-hub container if it's running
                         bat '''
-                        docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
-                        docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
-                        docker-compose -f docker-compose.yml up -d
+                        kubectl apply -f selenium-hub.yaml
+                        kubectl apply -f selenium-hub-service.yaml
+                        kubectl apply -f chrome-node.yaml
+                        kubectl apply -f firefox-node.yaml
+                        kubectl apply -f edge-node.yaml
                         '''
+                        bat 'start /B kubectl port-forward service/selenium-hub 4444:4444'
                     }
+                }
+            }
+        }
+        
+        stage('Scale Selenium Grid') {
+            steps {
+                script {
+                    bat '''
+                    echo Before Scaling:
+                    kubectl get pods
+                    echo Scaling Selenium Grid nodes...
+                    kubectl scale deployment selenium-hub --replicas=3
+                    kubectl scale deployment chrome-node --replicas=5
+                    kubectl scale deployment edge-node --replicas=5
+                    kubectl scale deployment firefox-node --replicas=5
+                    echo After Scaling:
+                    kubectl get pods
+                    '''
                 }
             }
         }
@@ -89,6 +105,7 @@ pipeline {
                 }
             }
         }
+        
         
         stage('Run Test Cases') {
             parallel {
@@ -150,19 +167,23 @@ pipeline {
             }
         }
         
-        stage('Teardown Selenium Grid') {
-            steps {
-                script {
-                    dir('second-repo'){
-                        // Forcefully stop and remove the selenium-hub container
-                        bat '''
-                        docker ps -q -f name=selenium-hub | for /f %%i in ('more') do docker kill %%i
-                        docker ps -aq -f name=selenium-hub | for /f %%i in ('more') do docker rm -f %%i
-                        '''
-                    }
-                }
-            }
-        }
+        // stage('Teardown Selenium Grid') {
+        //     steps {
+        //         script {
+        //             dir('second-repo'){
+        //                 bat '''
+        //                 echo "Starting Docker cleanup"
+        //                 kubectl delete -f chrome-node.yaml
+        //                 kubectl delete -f firefox-node.yaml
+        //                 kubectl delete -f edge-node.yaml
+        //                 kubectl delete -f selenium-hub.yaml
+        //                 kubectl delete -f selenium-hub-service.yaml
+
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     post {
